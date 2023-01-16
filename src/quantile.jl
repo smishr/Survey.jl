@@ -42,3 +42,44 @@ function quantile(var::Symbol, design::SurveyDesign, p::Union{<:Real,Vector{<:Re
     # TODO: Add CI and SE of the quantile
     return df
 end
+
+using Statistics: quantile
+
+function weighted_quantile(x::AbstractVector, w::AbstractVector, q::Real, type=7)
+    n = length(x)
+    xw = x .* w
+    sw = sum(w)
+    xw_sorted, w_sorted = sort(xw, w)
+    cdf = cumsum(w_sorted) / sw
+    p = q * n
+    if type == 7
+        # Hyndman and Fan (1996) type 7 quantile
+        h = n * q + p
+        j = floor(h)
+        g = h - j
+        if j == 0
+            quant = xw_sorted[1]
+        elseif j == n
+            quant = xw_sorted[n]
+        else
+            quant = (1 - g) * xw_sorted[j] + g * xw_sorted[j + 1]
+        end
+    else
+        # Other types of quantiles as defined by Hyndman and Fan (1996)
+        j = floor(p + type)
+        g = p + type - j
+        if j == 0
+            quant = xw_sorted[1]
+        elseif j == n
+            quant = xw_sorted[n]
+        else
+            quant = (1 - g) * xw_sorted[j] + g * xw_sorted[j + 1]
+        end
+    end
+    return quant / sum(w)
+end
+
+function quantile(design::ReplicateDesign, q::Real, type=7)
+    n = nrow(design.data)
+    x = design.data[:, :x]
+end
