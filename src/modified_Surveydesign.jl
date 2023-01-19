@@ -1,4 +1,6 @@
-"""Can you modify above structures so that multi stage sampling is done using complete information about finite population sizes, fpc, and cluster info for each stage"""
+"""Can you modify above structures so that multi stage sampling is done using 
+complete information about finite population sizes, fpc, and cluster info for 
+each stage"""
 
 struct SurveyDesign <: AbstractSurveyDesign
     data::AbstractDataFrame
@@ -44,7 +46,10 @@ struct SurveyDesign <: AbstractSurveyDesign
 end
 
 """
-The above struct has clusters field of type Vector{Symbol} to support multi-stage sampling. A new field fpc is added to store the finite population size information and stage_clusters field added to store the cluster information for each stage of sampling.
+The above struct has clusters field of type Vector{Symbol} to support 
+    multi-stage sampling. A new field fpc is added to store the finite 
+    population size information and stage_clusters field added to store 
+    the cluster information for each stage of sampling.
 
 It also checks if the number of clusters and number of stage clusters match. If not, it will throw an error. The weights field is calculated by dividing the sampling weights by fpc. Note that this is only an example, you may need to adjust the implementation based on your specific use case.
 """
